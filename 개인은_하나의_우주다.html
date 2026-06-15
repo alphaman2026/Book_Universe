@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>개인은 하나의 우주다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0a0e22;          /* 밤하늘 */
+    --ink-2:#121733;
+    --paper:#f5f5f1;        /* 읽는 표면 */
+    --paper-warm:#efeee7;
+    --text:#1d2236;         /* 본문 글자 */
+    --text-soft:#5a6075;
+    --cool:#8b93f0;         /* 한 우주: 차가운 별 */
+    --cool-deep:#5d66c9;
+    --warm:#e0a85b;         /* 다른 우주: 따뜻한 별 */
+    --line:#d9d8cf;
+    --col: 39rem;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:"Noto Sans KR",system-ui,sans-serif;
+    font-weight:400;
+    line-height:1.95;
+    word-break:keep-all;
+    overflow-wrap:anywhere;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- 읽기 진행 바 ---- */
+  #progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--warm),var(--cool));
+    z-index:50; transition:width .1s linear;
+  }
+
+  /* ===================== 표지 ===================== */
+  .cover{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    background:
+      radial-gradient(1100px 700px at 70% 18%, rgba(139,147,240,.22), transparent 60%),
+      radial-gradient(900px 620px at 22% 82%, rgba(224,168,91,.14), transparent 60%),
+      linear-gradient(180deg,#070a1c 0%, var(--ink) 45%, var(--ink-2) 100%);
+    color:#eef0fb;
+    overflow:hidden;
+    padding:6vh 1.5rem;
+  }
+  .stars{position:absolute; inset:0; pointer-events:none;}
+  .stars i{
+    position:absolute; width:2px; height:2px; border-radius:50%;
+    background:#dfe4ff; opacity:.0;
+    animation:tw 4s infinite ease-in-out;
+  }
+  @keyframes tw{0%,100%{opacity:.15;}50%{opacity:.85;}}
+
+  /* 두 우주가 만나는 모티프 */
+  .meeting{
+    position:relative; width:230px; height:120px; margin-bottom:2.6rem;
+  }
+  .orb{position:absolute; top:50%; border-radius:50%; transform:translateY(-50%); filter:blur(.2px);}
+  .orb.a{
+    left:20px; width:74px; height:74px;
+    background:radial-gradient(circle at 35% 32%, #c7ccff, var(--cool-deep) 70%);
+    box-shadow:0 0 38px 6px rgba(139,147,240,.55);
+    animation:float1 7s ease-in-out infinite;
+  }
+  .orb.b{
+    right:20px; width:54px; height:54px;
+    background:radial-gradient(circle at 35% 32%, #ffe6bf, var(--warm) 72%);
+    box-shadow:0 0 30px 5px rgba(224,168,91,.5);
+    animation:float2 7s ease-in-out infinite;
+  }
+  .bridge{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:88px; height:1px;
+    background:linear-gradient(90deg,rgba(139,147,240,.7),rgba(224,168,91,.7));
+    opacity:.55;
+  }
+  @keyframes float1{0%,100%{transform:translateY(-50%);}50%{transform:translateY(-62%);}}
+  @keyframes float2{0%,100%{transform:translateY(-50%);}50%{transform:translateY(-38%);}}
+
+  .cover .eyebrow{
+    font-size:.78rem; letter-spacing:.42em; text-transform:uppercase;
+    color:#a6adda; margin-bottom:1.6rem; font-weight:300;
+  }
+  .cover h1{
+    font-family:"Nanum Myeongjo",serif; font-weight:800;
+    font-size:clamp(2.7rem,8vw,4.6rem); line-height:1.12; margin:0;
+    letter-spacing:.01em;
+  }
+  .cover .sub{
+    margin-top:1.5rem; color:#c3c8e6; font-weight:300;
+    font-size:clamp(.95rem,2.4vw,1.12rem); letter-spacing:.04em;
+  }
+  .cover .thesis{
+    margin-top:3.4rem; font-family:"Nanum Myeongjo",serif; font-style:italic;
+    color:#9aa2d4; font-size:1.05rem;
+  }
+  .scrollcue{
+    position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%);
+    color:#7c84b4; font-size:.72rem; letter-spacing:.3em; writing-mode:vertical-rl;
+    animation:cue 2.4s ease-in-out infinite;
+  }
+  @keyframes cue{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0);}50%{opacity:.9;transform:translateX(-50%) translateY(8px);}}
+
+  /* ===================== 본문 레이아웃 ===================== */
+  main{padding:0 1.5rem;}
+  .wrap{max-width:var(--col); margin:0 auto;}
+
+  /* 목차 */
+  .toc{padding:7rem 0 4rem;}
+  .toc h2{
+    font-family:"Nanum Myeongjo",serif; font-weight:700; font-size:1.05rem;
+    letter-spacing:.3em; color:var(--text-soft); text-align:center; margin:0 0 2.6rem;
+  }
+  .toc ol{list-style:none; margin:0; padding:0;}
+  .toc li{border-top:1px solid var(--line);}
+  .toc li:last-child{border-bottom:1px solid var(--line);}
+  .toc a{
+    display:flex; align-items:baseline; gap:1rem; padding:1.05rem .2rem;
+    text-decoration:none; color:var(--text); transition:.25s;
+  }
+  .toc a:hover{padding-left:.9rem; color:var(--cool-deep);}
+  .toc .num{
+    font-family:"Nanum Myeongjo",serif; font-size:.82rem; color:var(--warm);
+    width:2.1rem; flex:none; letter-spacing:.05em;
+  }
+  .toc .tt{font-size:1.06rem; font-weight:500;}
+
+  /* 장 */
+  .chapter{padding:5.5rem 0; border-top:1px solid var(--line);}
+  .chapter:first-of-type{border-top:none;}
+  .chmark{
+    display:flex; align-items:center; gap:.9rem; margin-bottom:1.4rem;
+  }
+  .chmark .dot{
+    position:relative; width:34px; height:34px; flex:none; border-radius:50%;
+    border:1px solid var(--cool); display:grid; place-items:center;
+  }
+  .chmark .dot::after{
+    content:""; position:absolute; width:6px; height:6px; border-radius:50%;
+    background:var(--warm); top:-3px; right:-3px;
+  }
+  .chmark .dot span{
+    font-family:"Nanum Myeongjo",serif; font-size:.9rem; color:var(--cool-deep); font-weight:700;
+  }
+  .chmark .kicker{
+    font-size:.72rem; letter-spacing:.34em; text-transform:uppercase; color:var(--text-soft);
+  }
+  .chapter h2.ttl{
+    font-family:"Nanum Myeongjo",serif; font-weight:800;
+    font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.25; margin:0 0 1.8rem;
+    letter-spacing:.005em;
+  }
+  .chapter h3{
+    font-family:"Nanum Myeongjo",serif; font-weight:700;
+    font-size:1.28rem; margin:2.9rem 0 1rem; color:var(--cool-deep);
+    display:flex; align-items:center; gap:.7rem;
+  }
+  .chapter h3::before{
+    content:""; width:14px; height:1px; background:var(--warm); flex:none;
+  }
+  .chapter p{
+    margin:0 0 1.25rem; text-align:justify; font-size:1.075rem; color:var(--text);
+  }
+  .chapter p.lead{
+    font-family:"Nanum Myeongjo",serif; font-size:1.16rem; line-height:1.85;
+    color:#2a2f47;
+  }
+
+  /* 들어가며 / 맺음말 강조 */
+  .feature{
+    background:var(--paper-warm); border-radius:2px;
+    margin:0 -1.5rem; padding:5.5rem 1.5rem;
+  }
+  .feature .wrap{max-width:var(--col);}
+  .feature h2.ttl{color:var(--ink);}
+  .pull{
+    font-family:"Nanum Myeongjo",serif; font-style:italic;
+    font-size:1.18rem; line-height:1.8; color:var(--cool-deep);
+    border-left:2px solid var(--warm); padding:.2rem 0 .2rem 1.4rem;
+    margin:2.4rem 0;
+  }
+
+  footer{
+    background:var(--ink); color:#a6adda; text-align:center;
+    padding:4.5rem 1.5rem; font-weight:300; letter-spacing:.05em;
+  }
+  footer .fwrap{max-width:var(--col); margin:0 auto;}
+  footer .star{color:var(--warm); font-style:normal;}
+  footer p{margin:.4rem 0; font-size:.92rem;}
+  footer .end{
+    font-family:"Nanum Myeongjo",serif; font-size:1.2rem; color:#e9ebf8; margin-bottom:1.4rem;
+  }
+
+  @media (max-width:560px){
+    .chapter p{text-align:left;}
+    .toc{padding:5rem 0 3rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- ===================== 표지 ===================== -->
+<header class="cover">
+  <div class="stars" id="stars"></div>
+  <div class="meeting" aria-hidden="true">
+    <span class="bridge"></span>
+    <span class="orb a"></span>
+    <span class="orb b"></span>
+  </div>
+  <p class="eyebrow">인간관계에 대하여</p>
+  <h1>개인은<br/>하나의 우주다</h1>
+  <p class="sub">— 다름을 안고 살아가는 인간관계에 대하여 —</p>
+  <p class="thesis">관계는 두 우주가 만나는 일이다.</p>
+  <div class="scrollcue">SCROLL</div>
+</header>
+
+<main>
+  <!-- 목차 -->
+  <nav class="toc wrap" aria-label="목차">
+    <h2>목 차</h2>
+    <ol>
+      <li><a href="#intro"><span class="num">序</span><span class="tt">들어가며 — 개인은 하나의 우주다</span></a></li>
+      <li><a href="#c1"><span class="num">01</span><span class="tt">친구 관계</span></a></li>
+      <li><a href="#c2"><span class="num">02</span><span class="tt">동료 관계</span></a></li>
+      <li><a href="#c3"><span class="num">03</span><span class="tt">사장님과 직원 관계</span></a></li>
+      <li><a href="#c4"><span class="num">04</span><span class="tt">스승과 제자 관계</span></a></li>
+      <li><a href="#c5"><span class="num">05</span><span class="tt">부모와 자식 관계</span></a></li>
+      <li><a href="#c6"><span class="num">06</span><span class="tt">부부 관계</span></a></li>
+      <li><a href="#c7"><span class="num">07</span><span class="tt">친척 관계</span></a></li>
+      <li><a href="#c8"><span class="num">08</span><span class="tt">이웃 관계</span></a></li>
+      <li><a href="#c9"><span class="num">09</span><span class="tt">애인 관계</span></a></li>
+      <li><a href="#outro"><span class="num">終</span><span class="tt">맺음말 — 두 우주가 만나는 일</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- ===================== 들어가며 ===================== -->
+  <section class="feature" id="intro">
+    <div class="wrap">
+      <div class="chmark"><div class="dot"><span>序</span></div><span class="kicker">Prologue</span></div>
+      <h2 class="ttl">들어가며 — 개인은 하나의 우주다</h2>
+
+      <p class="lead">개인은 하나의 우주다.</p>
+      <p>다른 개인과 물리적으로 소통하는 것은 가능하다. 그러나 그 소통을 어떻게 해석하느냐는 개인, 곧 저마다의 우주마다 다르다. 같은 말을 듣고도 다르게 받아들이고, 같은 풍경을 보고도 다른 것을 본다.</p>
+      <p>우리는 각자 다른 경험을 했고, 다른 DNA를 가졌으며, 다른 환경에서 자랐다. 다른 가족과 다른 친척, 다른 먹을거리와 다른 집. 이런 차이들이 쌓여 사람은 서로 많이 다른 존재가 된다. 인식이 다르고 능력이 다르다.</p>
+      <p>지금 이 순간을 들여다보아도 그렇다. 서로 필요한 것이 다르다. 배고픈 정도가 다르고, 먹고 싶은 메뉴가 다르고, 하고 싶은 일이 다르다. 입은 옷이 다르고, 풍기는 향기가 다르고, 가진 재산이 다르다. 아는 것이 다르고, 알고 싶은 것이 다르며, 지금 하고 있는 일이 다르다.</p>
+      <p>시간이 흐르고 나이가 들수록 다른 점은 더 넓고 깊게 드러나고, 우리는 그 차이를 더 또렷이 인식하게 된다. 이것이 나이가 들수록 더 외로워지고 고독해지는 이유 중 하나다.</p>
+
+      <h3>관계에는 인내와 기다림이 필요하다</h3>
+      <p>누군가와 인간관계를 맺는다는 것은 때로 엄청난 인내와 기다림을 요구한다. 왜냐하면 상대는 나와 다르기 때문이다.</p>
+      <p>상대가 나를 온전히 이해해 주기를 바라는 것은, 확률이 낮은 일을 바라는 것과 같다. 설사 상대가 나를 이해한 것처럼 느껴진다 해도, 그것은 나의 착각이거나, 혹은 다른 목적을 가진 상대에게 이용당하고 있는 상황일 수도 있다. 반대로 내가 상대를 온전히 이해한다는 것 역시 대단히 어려운 일이다.</p>
+
+      <h3>나조차 매 순간 다른 우주다</h3>
+      <p>과거의 나와 지금의 나, 그리고 미래의 나는 서로 다르다고 볼 수 있다. 신체의 나이가 다르고 쌓인 경험이 다르다. 상당 부분 같지만, 엄밀히 보면 다르다. 매 순간 욕구와 욕망과 필요가 달라진다.</p>
+      <p>그래서 지금 내가 좋다고 여기는 것도 시간이 흐르면 좋지 않게 느껴질 수 있고, 어쩌면 아예 관심의 대상이 아니게 될 수도 있다. 당연히 나와 다른 상대도 마찬가지다. 같은 것을 두고도 누군가는 좋아하고, 누군가는 싫어하며, 누군가는 전혀 관심이 없다.</p>
+
+      <h3>역지사지, 그리고 사랑</h3>
+      <p class="pull">상대가 나와 다름을 인정하고, 상대의 입장에서 ‘그럴 수도 있겠구나’ 하고 헤아리는 것 — 이것이 역지사지(易地思之)이고, 더 넓게 보면 사랑이다.</p>
+      <p>물론 상대를 이해할 수는 있어도, 극단적인 상황에서 무언가를 선택해야 한다면 대부분의 사람은 자신의 이익을 극대화하는 쪽을 택한다. 자신이 아닌 상대의 이익을 택하는 사람은, 자신을 생각하는 범위가 육체적인 자기 자신을 넘어서서 상대나 이념, 혹은 조직을 자신과 동일시하는 사람이라고 볼 수 있다.</p>
+
+      <h3>관계는 결국 이해관계 위에 선다</h3>
+      <p>상대가 좋다는 것은, 지금 나에게 그 상대가 이익이 되기 때문인 경우가 많다. 이익이 되지 않으면 관심이 사라지거나 싫어지게 된다. 상대 입장에서도 마찬가지다. 지금 당장 내가 이익이 되거나, 과거에 이익이 되었거나, 앞으로 이익이 되리라 여겨질 때 상대는 나를 좋아한다. 그렇지 않으면 나에게 무관심하거나 나를 싫어한다.</p>
+      <p>내가 젊고 한창 능력이 있을 때는 나를 좋아하는 사람이 많다. 그러나 내가 늙거나 병들었을 때는 사람들이 나에게 별 관심이 없다. 더 강한 사람을 좋아하느라 바쁘기 때문이다.</p>
+      <p>개인 간의 관계가 이렇게 이해관계에 따라 좋아지고 나빠지고 무관심해지듯, 개인과 조직의 관계, 조직과 조직의 관계도 본질은 비슷하다. 이 책은 이러한 시선 위에서 우리가 살아가며 맺는 여러 관계를 하나씩 들여다본다. 차갑게 보일 수도 있는 이 관점은, 사실 환상을 걷어내고 관계를 더 오래, 더 건강하게 이어가기 위한 출발점이다.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+
+    <!-- 1 친구 -->
+    <section class="chapter" id="c1">
+      <div class="chmark"><div class="dot"><span>1</span></div><span class="kicker">Friends</span></div>
+      <h2 class="ttl">친구 관계</h2>
+      <p class="lead">친구는 우리가 스스로 선택하는 거의 유일한 관계다. 가족도 친척도 주어지는 것이지만, 친구는 수많은 우주 가운데 내가 가까이 둔 우주다.</p>
+      <p>그래서 친구 관계에는 ‘선택’이라는 자유와 함께 ‘선택받지 못할 수도 있다’는 불안이 함께 깃든다. 두 사람이 친구가 되는 순간을 들여다보면, 대개 그 시점에 서로의 우주가 맞닿는 무언가가 있다. 같은 학교, 같은 동네, 같은 취미, 같은 처지. 함께 있으면 즐겁거나, 외롭지 않거나, 도움이 되거나, 위로가 된다. 정직하게 말하면 친구 사이에도 이익은 흐른다. 다만 그 이익이 돈처럼 눈에 보이지 않고 정서적 위안, 소속감, 재미, 안정감의 모습을 띨 뿐이다.</p>
+      <h3>멀어지는 것은 배신이 아니다</h3>
+      <p>어릴 적 둘도 없던 친구와 어느새 연락이 끊긴 경험은 누구에게나 있다. 우리는 그것을 종종 배신이나 변심으로 받아들인다. 그러나 ‘개인은 하나의 우주’라는 시선에서 보면, 그것은 두 우주가 서로 다른 궤도로 멀어진 자연스러운 현상에 가깝다. 진학과 취업, 결혼과 이사, 가치관의 변화가 두 사람을 다른 곳으로 데려간다. 한때 겹쳤던 관심사와 필요가 더 이상 겹치지 않게 된 것이다.</p>
+      <p>이 사실을 받아들이면 멀어진 친구에게 품는 원망이 옅어진다. 그는 변한 것이 아니라, 단지 자신의 우주를 살아가고 있을 뿐이다. 나 역시 그렇다.</p>
+      <h3>오래가는 우정의 조건</h3>
+      <p>그럼에도 평생을 가는 우정이 있다. 이런 우정은 보통 ‘이익’만이 유일한 접착제가 아닐 때 성립한다. 상대가 잘나갈 때만이 아니라 무너졌을 때에도 곁에 남고, 내가 더 이상 그에게 줄 것이 없어 보일 때에도 떠나지 않는 관계. 이는 한쪽이 자신의 범위를 넓혀 친구를 자기 자신처럼 여길 때 가능해진다. 들어가며에서 말한, 자기를 생각하는 범위가 육체적 자아를 넘어서는 그 사랑이다.</p>
+      <p>그러니 친구에게 너무 많은 이해를 기대하기보다, 다른 우주가 잠시 내 곁에 머물러 주는 것에 대한 고마움으로 대하는 편이 좋다. 기대가 낮을수록 우정은 가벼워지고, 가벼울수록 오래간다.</p>
+    </section>
+
+    <!-- 2 동료 -->
+    <section class="chapter" id="c2">
+      <div class="chmark"><div class="dot"><span>2</span></div><span class="kicker">Colleagues</span></div>
+      <h2 class="ttl">동료 관계</h2>
+      <p class="lead">동료는 친구와 닮았지만 결정적으로 다르다. 우리는 동료를 선택하지 않는다.</p>
+      <p>같은 조직, 같은 목표, 같은 공간이라는 외부 조건이 우리를 한자리에 묶어 놓았을 뿐이다. 서로 다른 우주들이, 공동의 일이라는 한 점에서 만난 사이다. 그래서 동료 관계의 이익은 비교적 분명하다. 우리는 ‘함께 일하기 때문에’ 함께 있다. 협력하면 일이 잘 풀리고, 잘 풀리면 서로에게 이익이 된다. 그러나 같은 자리에는 경쟁도 함께 있다. 한정된 평가와 승진, 인정 앞에서 동료는 협력자인 동시에 경쟁자가 된다. 이 두 얼굴이 공존하는 것이 동료 관계의 본질이다.</p>
+      <h3>동료를 친구로 착각할 때</h3>
+      <p>가장 흔한 오해는 동료를 친구로 착각하는 것이다. 매일 오랜 시간을 함께 보내다 보면 친밀감이 쌓이고, 그 친밀감을 우정으로 오인하기 쉽다. 그러나 그 친밀함의 상당 부분은 ‘같은 일’이라는 조건 위에 서 있다. 그 조건이 사라지면 — 한쪽이 퇴사하거나 부서가 바뀌면 — 관계도 함께 옅어지는 경우가 많다. 그것을 미리 알아 두면, 훗날 서운함이 줄어든다.</p>
+      <h3>좋은 동료가 된다는 것</h3>
+      <p>이 사실이 동료 관계를 냉소적으로 만들 필요는 없다. 오히려 솔직한 인식 위에서 더 성숙한 협력이 가능해진다. 서로의 우주가 다름을 인정하고, 상대의 입장에서 그의 사정을 헤아려 주는 것. 내 일이 아닌 일을 한 번 도와주는 것. 공을 다투기보다 나누는 것. 이런 행동이 쌓일 때 동료는 단순한 이해관계를 넘어, 함께 있고 싶은 사람이 된다.</p>
+      <p>동료에게 완벽한 이해를 바라지 말되, 함께 일하는 동안만큼은 서로의 짐을 조금씩 나눠 드는 것 — 그것으로 충분하다.</p>
+    </section>
+
+    <!-- 3 사장과 직원 -->
+    <section class="chapter" id="c3">
+      <div class="chmark"><div class="dot"><span>3</span></div><span class="kicker">Boss &amp; Staff</span></div>
+      <h2 class="ttl">사장님과 직원 관계</h2>
+      <p class="lead">사장과 직원의 관계는, 이해관계가 가장 투명하게 드러나는 관계다.</p>
+      <p>직원은 노동과 시간을 내어 주고, 사장은 그 대가로 보수를 지급한다. 이 교환이 관계의 토대다. 여기에는 권력과 이익의 비대칭이 처음부터 들어 있다. 두 우주는 각자의 이익을 극대화하려 한다. 사장은 더 적은 비용으로 더 큰 성과를 원하고, 직원은 더 나은 보상과 성장, 안정을 원한다. 이 두 방향이 늘 일치하지는 않는다. 그래서 이 관계에는 본질적인 긴장이 흐른다. 이 긴장을 숨기지 않고 인정하는 편이, 서로에 대한 막연한 원망을 줄여 준다.</p>
+      <h3>‘우리는 가족’이라는 말의 함정</h3>
+      <p>회사가 ‘우리는 한 가족’이라고 말할 때, 직원은 조심할 필요가 있다. 가족이라는 언어는 따뜻하지만, 종종 노동의 대가를 정서적 헌신으로 바꿔 받으려는 수사로 쓰인다. 동시에 직원도 회사가 끝까지 자신을 책임져 주리라 기대해서는 안 된다. 들어가며에서 말했듯, 내가 한창 능력이 있을 때 사람들은 나를 찾지만, 그 능력이 다하면 시선은 더 강한 곳으로 옮겨간다. 조직과 개인의 관계도 본질은 같다.</p>
+      <h3>그래도 좋은 관계는 가능하다</h3>
+      <p>그렇다면 이 관계는 차가운 거래로만 끝나야 할까. 그렇지 않다. 좋은 사장은 자신의 범위를 직원에게까지 넓히는 사람이다. 직원의 성장과 형편을 자기 일처럼 여기고, 어려울 때 함께 견디려는 사람. 좋은 직원 역시 회사의 사정을 자기 일처럼 헤아리는 사람이다. 이렇게 서로가 자신을 조금씩 넘어설 때, 거래는 신뢰가 된다.</p>
+      <p>다만 그 신뢰는 ‘공짜로 주어진 가족애’가 아니라, 정당한 교환 위에서 쌓아 올린 선택임을 기억해야 한다. 기대를 환상에 두지 않고 현실에 두는 사람이, 결국 더 오래 좋은 관계를 유지한다.</p>
+    </section>
+
+    <!-- 4 스승과 제자 -->
+    <section class="chapter" id="c4">
+      <div class="chmark"><div class="dot"><span>4</span></div><span class="kicker">Teacher &amp; Student</span></div>
+      <h2 class="ttl">스승과 제자 관계</h2>
+      <p class="lead">스승과 제자의 관계는 ‘성장’과 ‘전수’를 향해 놓인 관계다.</p>
+      <p>한쪽은 더 많이 알고 더 멀리 가 본 우주이고, 다른 한쪽은 그 길을 따라 자신의 우주를 넓혀 가려는 사람이다. 지식과 경험의 비대칭이 이 관계의 출발점이다. 여기에도 이익은 흐른다. 제자는 배움이라는 이익을 얻고, 스승은 가르침을 통해 의미와 보람, 때로는 자신이 세상에 남긴다는 흔적, 그리고 솔직히 말하면 인정받는 기쁨을 얻는다. 이 이익이 건강하게 흐를 때 두 사람은 함께 자란다.</p>
+      <h3>가르침이 어려운 이유</h3>
+      <p>가르침이 어려운 이유는, 스승의 우주와 제자의 우주가 다르기 때문이다. 스승에게 당연한 것이 제자에게는 낯설고, 제자가 막힌 지점을 스승은 이미 잊어버렸을 수 있다. 좋은 스승은 자신의 앎을 그대로 쏟아붓는 사람이 아니라, 제자의 우주로 건너가 그 자리에서 다시 설명할 줄 아는 사람이다. 이것이 가르침에서의 역지사지다.</p>
+      <h3>청출어람, 그리고 떠나보냄</h3>
+      <p>진정한 스승의 사랑은, 제자가 자신을 넘어서기를 바라는 마음에서 드러난다. 제자가 스승보다 더 멀리 가고(청출어람), 끝내 스승의 곁을 떠나 자신의 길을 갈 때 — 거기에는 서운함과 자랑스러움이 함께 있다. 스승이 자신의 범위를 제자에게까지 넓힌 사람이라면, 제자의 성취를 곧 자신의 성취처럼 기뻐할 수 있다.</p>
+      <p>제자 역시 언젠가 스승이 틀릴 수 있음을, 스승 또한 하나의 불완전한 우주임을 알게 된다. 그 깨달음에 실망하지 않고 받은 것에 감사할 수 있다면, 그는 잘 배운 사람이다.</p>
+    </section>
+
+    <!-- 5 부모와 자식 -->
+    <section class="chapter" id="c5">
+      <div class="chmark"><div class="dot"><span>5</span></div><span class="kicker">Parent &amp; Child</span></div>
+      <h2 class="ttl">부모와 자식 관계</h2>
+      <p class="lead">부모와 자식의 관계는, 이 책의 ‘이해관계’라는 시선이 가장 시험받는 자리다.</p>
+      <p>많은 부모는 돌려받을 것을 계산하지 않고 자식에게 자신을 내어 준다. 이는 들어가며에서 말한 ‘자신의 범위를 육체적 자아 너머로 넓히는’ 사랑의 가장 강력한 사례다. 부모는 자식을 또 하나의 자기 자신으로 여긴다. 그러나 바로 거기에 깊은 진실이 숨어 있다. 부모가 자식을 자신의 연장으로 느낄지라도, 자식은 처음부터 끝까지 ‘다른 우주’라는 사실이다. 다른 시대에 태어나 다른 경험을 하고, 부모가 겪지 못한 세계를 살아간다. 부모의 사랑이 아무리 깊어도, 자식의 우주를 부모의 우주로 만들 수는 없다.</p>
+      <h3>사랑이 통제가 될 때</h3>
+      <p>부모의 사랑이 어긋나는 지점은 대개 여기다. 자식을 자신의 연장으로 여기는 마음이, 자식의 우주를 자기 뜻대로 다스리려는 통제로 바뀔 때다. ‘다 너를 위해서’라는 말 뒤에는, 종종 자식을 자신과 동일시한 부모의 욕망이 숨어 있다. 진짜 사랑은 자식이 나와 다른 우주임을 인정하고, 그 우주가 스스로 펼쳐지도록 지켜보는 데서 시작한다.</p>
+      <h3>세대라는 거리, 그리고 외로움</h3>
+      <p>자식은 자라며 부모에게서 멀어진다. 그것은 잘 자라고 있다는 증거이기도 하다. 부모는 그 거리 앞에서 외로움을 느낀다. 한때 내 품이 세상의 전부였던 아이가, 이제 자신만의 우주를 가지고 부모가 모르는 곳을 살아간다. 이 외로움은 나이가 들수록 더 또렷해지는, 들어가며에서 말한 그 고독의 한 모습이다.</p>
+      <p>그러나 자식이 떠나는 것을 상실로만 보지 않을 수도 있다. 다른 우주 하나를 세상에 잘 내보냈다는 것, 그 자체로 부모의 사랑은 이미 완성된 것이다. 자식 또한 언젠가 부모가 자신을 위해 얼마나 많은 것을 내어 주었는지를, 자신이 부모가 되어서야 비로소 헤아리게 된다.</p>
+    </section>
+
+    <!-- 6 부부 -->
+    <section class="chapter" id="c6">
+      <div class="chmark"><div class="dot"><span>6</span></div><span class="kicker">Married Couple</span></div>
+      <h2 class="ttl">부부 관계</h2>
+      <p class="lead">부부는, 성인이 된 두 우주가 평생을 함께하기로 선택한 관계다.</p>
+      <p>흔히 ‘둘이 하나가 된다’고 말하지만, 그것은 아름다운 이상일 뿐 사실과는 다르다. 두 우주는 결코 완전히 하나가 되지 않는다. 다만 가장 가까이에서 나란히 돌 뿐이다. 그래서 부부 사이에는 매일 작은 마찰이 인다. 식성이 다르고, 잠버릇이 다르고, 돈을 대하는 태도가 다르고, 화나는 지점이 다르다. 이 차이들은 결함이 아니라, 애초에 다른 우주가 만났다는 당연한 증거다. 차이가 있다는 사실에 놀라기보다, 차이가 있는 것이 정상임을 받아들이는 데서 부부 생활은 한결 편안해진다.</p>
+      <h3>끌림에서 사랑으로</h3>
+      <p>두 사람을 처음 끌어당긴 것은 대개 매력과 이익이다. 젊음, 능력, 외모, 안정감 같은 것들. 들어가며에서 말했듯, 그런 이익이 있을 때 사람은 서로를 좋아한다. 그러나 세월이 흐르면 젊음은 시들고 능력은 변하며, 처음의 끌림은 옅어진다. 끌림에만 기댄 관계가 흔들리는 것은 이 때문이다.</p>
+      <p>끌림이 사랑으로 자라야 부부는 오래간다. 여기서 사랑이란, 상대가 나와 다른 우주임을 매일 새롭게 인정하고, 그의 입장에서 헤아리기를 멈추지 않는 역지사지의 반복이다. 사랑은 감정이라기보다, 매일 다시 선택하는 행동에 가깝다.</p>
+      <h3>변해 가는 두 우주를 견디기</h3>
+      <p>더 어려운 진실은, 두 우주가 모두 끊임없이 변한다는 것이다. 들어가며에서 말했듯 과거의 나와 지금의 나조차 다르다. 내가 변하고 상대도 변하니, 부부는 사실 평생 동안 ‘조금씩 다른 사람’과 다시 만나며 살아가는 셈이다.</p>
+      <p>그러므로 부부에게 필요한 것은 ‘이미 다 안다’는 자만이 아니라, ‘아직 다 모른다’는 겸손이다. 오랜 부부일수록 서로를 다 안다고 여기지만, 그 확신이 오히려 거리를 만든다. 변해 가는 상대의 우주에 계속 관심을 두는 것 — 그것이 평생을 함께 견디게 하는 힘이다.</p>
+    </section>
+
+    <!-- 7 친척 -->
+    <section class="chapter" id="c7">
+      <div class="chmark"><div class="dot"><span>7</span></div><span class="kicker">Relatives</span></div>
+      <h2 class="ttl">친척 관계</h2>
+      <p class="lead">친척은 피로 묶였지만 선택하지 않은 관계다. 친구는 고를 수 있어도 친척은 주어진다.</p>
+      <p>어쩌면 가치관도, 사는 방식도 나와 전혀 다른 우주가, 단지 같은 핏줄이라는 이유로 내 삶에 들어와 있다. 그래서 친척 관계에는 ‘가깝지도 멀지도 않은’ 특유의 어색함이 흐른다. 친척 사이에도 이익은 작동한다. 명절에 오가는 정과 도움, 경조사에서의 부조, 때로는 상속과 재산을 둘러싼 긴장까지. 평소엔 무관심하다가도 이익이 걸리면 갑자기 가까워지거나 멀어지는 모습은, 들어가며에서 말한 이해관계의 작동을 가장 적나라하게 보여 주기도 한다.</p>
+      <h3>의무와 진심 사이</h3>
+      <p>친척 관계의 많은 부분은 ‘의무’로 이루어진다. 명절이니까 모이고, 가족이니까 챙긴다. 이 의무가 무거울 때 사람들은 친척 관계를 부담으로 느낀다. 그러나 의무를 진심으로 착각하지 않는 것이 오히려 건강하다. 의무는 의무대로 적당히 지키되, 진짜 마음이 가는 친척에게는 의무를 넘어선 정을 나누면 된다. 모든 친척과 깊을 필요는 없다.</p>
+      <h3>적당한 거리의 지혜</h3>
+      <p>친척은 너무 가까우면 상처를 주고받기 쉽고, 너무 멀면 핏줄의 의미가 사라진다. 그래서 친척 관계에는 ‘적당한 거리’의 지혜가 필요하다. 서로 다른 우주임을 인정하고, 명절 며칠의 다름은 며칠로 흘려보내며, 비교와 참견을 삼가는 것. 가까운 사이일수록 ‘그럴 수도 있지’ 하고 넘기는 여유가 관계를 오래 지켜 준다.</p>
+    </section>
+
+    <!-- 8 이웃 -->
+    <section class="chapter" id="c8">
+      <div class="chmark"><div class="dot"><span>8</span></div><span class="kicker">Neighbors</span></div>
+      <h2 class="ttl">이웃 관계</h2>
+      <p class="lead">이웃은 피로 묶이지도, 일로 묶이지도 않은, 오직 ‘가까이 산다’는 이유 하나로 이어진 관계다.</p>
+      <p>인간관계 가운데 가장 얇은 끈일지 모른다. 서로의 이름조차 모른 채 벽 하나, 복도 하나를 사이에 두고 살아가는 시대다. 그러나 얇다고 해서 사소한 것은 아니다. 층간 소음, 주차, 쓰레기, 공동 공간 — 이웃은 일상에서 가장 자주 부딪히는 우주이기도 하다. 멀리 있는 친척보다 가까운 이웃이 낫다는 옛말은, 이 작은 상호의존을 잘 짚어 낸 말이다.</p>
+      <h3>얇은 관계의 예의</h3>
+      <p>이웃 관계의 핵심은 ‘배려’와 ‘경계’의 균형이다. 서로 다른 생활 방식을 가진 우주들이 가까이 붙어 사는 만큼, 내 편리가 상대의 불편이 될 수 있음을 늘 의식해야 한다. 동시에 지나친 간섭과 사생활 침범은 얇은 관계를 단숨에 불편한 관계로 만든다. 적당한 인사, 적당한 거리, 그리고 폐를 끼치지 않으려는 최소한의 마음 — 이웃에게는 이것으로 충분하다.</p>
+      <h3>작은 연결의 가치</h3>
+      <p>현대의 익명성 속에서 이웃은 점점 ‘없는 사람’이 되어 간다. 그러나 재난이나 위기의 순간, 가장 먼저 손을 내밀 수 있는 사람은 결국 가까이 있는 이웃이다. 깊은 우정까지는 아니어도, 얼굴을 알고 가벼운 인사를 나누는 것만으로 우리는 조금 덜 외로워진다. 이웃은 큰 사랑을 요구하지 않는다. 다만 같은 공간을 함께 쓰는 다른 우주에 대한 작은 존중을 요구할 뿐이다.</p>
+    </section>
+
+    <!-- 9 애인 -->
+    <section class="chapter" id="c9">
+      <div class="chmark"><div class="dot"><span>9</span></div><span class="kicker">Lovers</span></div>
+      <h2 class="ttl">애인 관계</h2>
+      <p class="lead">애인 관계는, 두 우주가 하나가 되려고 가장 뜨겁게 시도하는 자리다.</p>
+      <p>부부가 제도와 시간 위에 선 관계라면, 애인은 감정과 욕망이 가장 강렬하게 타오르는 관계다. 그래서 가장 황홀하고, 동시에 가장 불안정하다. 사랑에 빠진 순간, 우리는 ‘이 사람만큼은 나를 완전히 이해한다’고 느낀다. 그러나 들어가며에서 말했듯, 그것은 종종 착각이다. 강렬한 감정은 두 우주의 차이를 잠시 보이지 않게 만들 뿐, 차이를 없애지는 못한다. 그래서 시간이 지나 콩깍지가 벗겨지면, 가려져 있던 다름이 한꺼번에 드러난다.</p>
+      <h3>끌림은 이익이다</h3>
+      <p>애인 관계는 이해관계가 감정의 옷을 입고 나타나는 관계다. 상대의 매력, 함께 있을 때의 즐거움, 채워지는 외로움 — 이 모두가 지금 나에게 이익이 되기에 상대가 좋은 것이다. 이익이 사라지거나 더 큰 끌림이 나타나면 마음은 흔들린다. 이것을 냉정하다 여길 수도 있지만, 오히려 이 사실을 알면 상대에게 영원한 감정을 강요하지 않게 되고, 식어 가는 마음을 두고 자신을 탓하며 괴로워하지도 않게 된다.</p>
+      <h3>열정에서 사랑으로 건너가기</h3>
+      <p>애인 관계의 갈림길은, 열정이 식은 그 자리에서 드러난다. 차이가 보이기 시작할 때 ‘이 사람은 나와 안 맞아’ 하고 돌아서는 길이 있고, ‘이 사람은 나와 다른 우주구나’ 하고 받아들이며 역지사지로 건너가는 길이 있다. 후자를 택할 때, 들끓던 열정은 비로소 사랑으로 자란다.</p>
+      <p>진짜 사랑은 상대를 완전히 이해해서 시작되는 것이 아니라, 끝내 다 이해할 수 없음을 알면서도 곁에 있기를 선택하는 데서 시작된다. 그 선택을 매일 새로 할 수 있다면, 두 우주는 비록 하나가 되지는 못해도, 가장 가까운 두 별로 오래 나란히 빛날 수 있다.</p>
+    </section>
+
+  </div><!-- /wrap -->
+
+  <!-- ===================== 맺음말 ===================== -->
+  <section class="feature" id="outro">
+    <div class="wrap">
+      <div class="chmark"><div class="dot"><span>終</span></div><span class="kicker">Epilogue</span></div>
+      <h2 class="ttl">맺음말 — 두 우주가 만나는 일</h2>
+      <p>지금까지 우리는 친구에서 애인에 이르기까지, 우리가 살며 맺는 관계들을 하나씩 들여다보았다. 관계의 종류는 저마다 달랐지만, 그 밑바닥에 흐르는 진실은 하나였다. 모든 관계는 결국, 서로 다른 두 우주가 만나는 일이라는 것이다.</p>
+      <p>개인은 하나의 우주다. 우리는 서로 다른 경험과 DNA와 환경을 지고, 매 순간 다른 것을 필요로 하며, 시간과 함께 끊임없이 변해 간다. 그래서 누군가에게 온전히 이해받는 일은 드물고, 나이가 들수록 그 다름은 더 또렷해져 우리를 외롭게 한다.</p>
+      <p>그러나 이 책이 말하려는 것은 외로움에 머무르자는 것이 아니다. 다름을 직시하는 일은, 환상을 걷어내고 관계를 더 단단히 세우기 위한 출발점이다. 상대에게 완전한 이해를 강요하지 않을 때 관계는 가벼워지고, 가벼울 때 오래간다. 이익으로 시작된 끌림이라도, 자신의 범위를 상대에게까지 넓혀 그를 자기 자신처럼 여길 때, 그 관계는 거래를 넘어 사랑이 된다.</p>
+      <p class="pull">결국 우리가 할 수 있는 일은 하나다. 상대가 나와 다른 우주임을 인정하고, 그의 자리에서 ‘그럴 수도 있겠구나’ 하고 헤아리는 것. 그것이 역지사지이고, 더 넓게 보면 사랑이다.</p>
+      <p>두 우주는 끝내 하나가 되지 못한다. 하지만 서로를 향해 조금씩 다가서며 나란히 빛나는 일 — 어쩌면 그것이 우리가 바랄 수 있는 가장 아름다운 관계의 모습일 것이다.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="fwrap">
+    <p class="end">두 우주가 나란히 빛나기를</p>
+    <p>개인은 하나의 우주다 <span class="star">✦</span> 다름을 안고 살아가는 인간관계에 대하여</p>
+  </div>
+</footer>
+
+<script>
+  // 읽기 진행 바
+  const bar = document.getElementById('progress');
+  function onScroll(){
+    const h = document.documentElement;
+    const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    bar.style.width = (scrolled * 100).toFixed(1) + '%';
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // 표지 별빛 생성
+  const sky = document.getElementById('stars');
+  if (sky && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const n = 60;
+    let html = '';
+    for (let i=0;i<n;i++){
+      const x = Math.random()*100, y = Math.random()*100;
+      const d = (Math.random()*4).toFixed(2);
+      const s = (1 + Math.random()*1.6).toFixed(1);
+      html += '<i style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;animation-delay:'+d+'s;"></i>';
+    }
+    sky.innerHTML = html;
+  }
+</script>
+</body>
+</html>
